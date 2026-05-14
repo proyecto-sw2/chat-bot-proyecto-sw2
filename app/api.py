@@ -3,6 +3,10 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 from langchain_core.messages import AIMessage, HumanMessage
 from dotenv import load_dotenv
+
+# 🔥 MUY IMPORTANTE: Cargar las variables de entorno antes de cargar la base de datos
+load_dotenv()
+
 from app.sinonimos import cargar_sinonimos, reemplazar_sinonimos
 from app.embeddings import load_and_process_document, create_vector_store
 from app.qa_chain import setup_qa_chain
@@ -11,7 +15,6 @@ from .models import Chat, Message
 from sqlalchemy.orm import Session
 
 Base.metadata.create_all(bind=engine)
-load_dotenv()
 
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}})
