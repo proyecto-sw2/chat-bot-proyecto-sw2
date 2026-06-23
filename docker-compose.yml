@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  postgres-chat-ia:
+    image: postgres:15-alpine
+    container_name: postgres-chat-ia
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: "12345"
+      POSTGRES_DB: chat_ia
+    ports:
+      # Exponemos en el 5433 para no chocar con el 5432 del back-proy
+      - "5433:5432"
+    volumes:
+      - postgres_chat_ia_data:/var/lib/postgresql/data
+
+  chat-ia-legal:
+    image: willxd123/chat-ia-legal:latest # Nombre propuesto para tu Docker Hub
+    container_name: chat-ia-legal
+    restart: unless-stopped
+    ports:
+      - "5000:5000"
+    environment:
+      # Sobreescribimos el DB_HOST quemado en el .env para que apunte al contenedor de BD
+      - DB_HOST=postgres-chat-ia
+    depends_on:
+      - postgres-chat-ia
+
+volumes:
+  postgres_chat_ia_data:
